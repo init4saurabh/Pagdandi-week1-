@@ -9,7 +9,7 @@ export interface LlmProvider {
 }
 
 type GeminiResponse = {
-  candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  candidates?: Array<{ content?: { parts?: Array<{ text?: string; thought?: boolean }> } }>;
   error?: { message?: string };
 };
 
@@ -23,8 +23,9 @@ export class GeminiApiProvider implements LlmProvider {
   async generate({ prompt, image }: GenerateInput): Promise<string> {
     if (!this.apiKey) throw new Error("MISSING_API_KEY");
     if (!this.model) throw new Error("MISSING_MODEL");
-    const parts: Array<Record<string, unknown>> = [{ text: prompt }];
-    if (image) parts.push({ inline_data: { mime_type: image.mimeType, data: image.data } });
+    const parts: Array<Record<string, unknown>> = image
+      ? [{ inline_data: { mime_type: image.mimeType, data: image.data } }, { text: prompt }]
+      : [{ text: prompt }];
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(this.model)}:generateContent?key=${encodeURIComponent(this.apiKey)}`,
       {
@@ -32,7 +33,7 @@ export class GeminiApiProvider implements LlmProvider {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ role: "user", parts }],
-          generationConfig: { temperature: 0.65, maxOutputTokens: 1200 },
+          generationConfig: { temperature: 0.65, maxOutputTokens: 1200, thinkingConfig: { thinkingLevel: "minimal", includeThoughts: false } },
         }),
       },
     );
@@ -41,7 +42,7 @@ export class GeminiApiProvider implements LlmProvider {
       if (response.status === 429) throw new Error("RATE_LIMITED");
       throw new Error(data.error?.message || `Gemini API failed (${response.status}).`);
     }
-    const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
+    const text = data.candidates?.[0]?.content?.parts?.filter((part) => !part.thought).map((part) => part.text ?? "").join("").trim();
     if (!text) throw new Error("The model returned an empty response.");
     return text;
   }

@@ -21,7 +21,7 @@ Gemma is not decoration here: it creates the quests, cautious photo guesses, and
 - `gemini-api` serves Gemma through Google’s Gemini API for the public Render demo.
 - `ollama` runs Gemma locally, so prompts and images stay on the user’s computer.
 
-No closed `gemini-*` model is used. Prompts live in versioned files and all instructions are placed in the user turn because Gemma’s instruction format does not support a system role. Structured responses are extracted from plain text, validated with Zod, and retried up to twice after an invalid response.
+No closed `gemini-*` model is used. Prompts live in versioned files and all instructions are kept in the user turn for portability across hosted Gemma 4 and local Ollama model variants. Structured responses are extracted from plain text, validated with Zod, and retried up to twice after an invalid response.
 
 ## Architecture
 

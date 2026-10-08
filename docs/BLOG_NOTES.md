@@ -15,7 +15,8 @@ Most apps optimize for time on screen. Pagdandi’s success metric is the opposi
 
 ## Gemma-specific quirks
 
-- Gemma instruction-tuned models use user/model turns and do not support a separate system role, so all role and safety instructions live in the initial user prompt.
+- Role and safety instructions stay in the initial user prompt for provider portability. Hosted Gemma 4 supports standard roles, while local chat templates can vary by model and runtime.
+- Gemma 4 thinking can consume the entire output budget before a final answer. The hosted provider explicitly requests `minimal` thinking, excludes returned thought parts, and reserves the output for the user-visible result.
 - Model availability is account- and time-dependent. The app lists available `generateContent` Gemma models instead of pretending one identifier is permanent.
 - Structured-output features are not assumed. JSON is requested as text, extracted defensively, validated, and retried.
 - Multimodal behavior depends on the selected Gemma checkpoint and serving runtime, so `GEMMA_MODEL` and `OLLAMA_MODEL` remain explicit configuration.
