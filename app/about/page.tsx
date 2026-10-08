@@ -1,0 +1,9 @@
+import Link from "next/link";
+import { ArrowIcon, LeafIcon } from "@/components/icons";
+import { ProviderBadge } from "@/components/provider-badge";
+
+export const metadata = { title: "About" };
+
+export default function AboutPage() {
+  return <main className="inner-page"><header className="site-header"><Link className="brand" href="/"><span><LeafIcon/></span> Pagdandi</Link><nav><Link href="/journal">Journal</Link><Link className="active" href="/about">About</Link></nav></header><article className="prose-page"><p className="eyebrow">Why this path exists</p><h1>Open intelligence.<br/><em>Less screen.</em></h1><p className="lede">Pagdandi turns a few seconds of planning into a walk led by sound, attention, and the world already around you.</p><section><h2>Gemma is the guide—not the destination</h2><p>Every quest, field note, and optional photo guess comes from Google’s open-weight Gemma family. No closed Gemini model is used. The model receives a broad area name and weather summary, never your exact coordinates.</p></section><section className="about-grid"><div><span>01</span><h3>Hosted mode</h3><p>The public demo sends prompts to a Gemma model through the Gemini API. The API key stays on the server.</p></div><div><span>02</span><h3>Local mode</h3><p>Switch one environment variable and the same provider interface talks to Gemma through Ollama on your own machine.</p></div><div><span>03</span><h3>Your field notes</h3><p>Walk journals live in your browser’s local storage. There is no account, database, tracking pixel, or social feed.</p></div></section><section><h2>About photo guesses</h2><p>Images are resized in your browser, processed in memory, and never stored by Pagdandi. Identification is only a cautious AI guess. Never eat or touch an unknown plant, fungus, insect, or animal based on an AI result.</p></section><div className="about-cta"><ProviderBadge/><Link href="/">Plan a walk <ArrowIcon/></Link></div></article></main>;
+}
